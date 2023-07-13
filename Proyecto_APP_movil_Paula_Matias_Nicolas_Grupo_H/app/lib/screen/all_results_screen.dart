@@ -18,21 +18,15 @@ class _AllResultsScreenState extends State<AllResultsScreen> {
     obtenerResultados();
   }
 
-  Future<void> obtenerResultados() async {
-    final url = Uri.parse('https://api.sebastian.cl/feeling/v1/voter/results');
-    String eljwt = await VoterService.getJwt(eltokeenn);
-    final headers = {'Authorization': 'Bearer $eljwt'};
-
+  void obtenerResultados() async {
+    final eljwt = await VoterService.getJwt(eltokeenn);
     try {
-      final response = await http.get(url, headers: headers);
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
+      final fetchedCourses = await VoterService.getresults(eljwt);
         setState(() {
-          results = jsonResponse['results'];
+          results = fetchedCourses;
+          print(results);
+          print("\n\n\n\n");
         });
-      } else {
-        print('Error al obtener los resultados: ${response.statusCode}');
-      }
     } catch (e) {
       print('Error al obtener los resultados: $e');
     }
@@ -49,13 +43,17 @@ class _AllResultsScreenState extends State<AllResultsScreen> {
         itemBuilder: (context, index) {
           final result = results[index];
           return ListTile(
-            title: Text('Token: ${result['token']}'),
+            title: Text(result['name']),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Fecha de la operación: ${result['attendance']}'),
-                Text('Votación: ${result['choice']}'),
-                // Agrega aquí los demás campos que deseas mostrar
+                Text('Código: ${result['code']}'),
+                Text('Token: ${result['token']}'),
+                Text('Semestre: ${result['semester']}'),
+                Text('Año: ${result['year']}'),
+                Text('Activo: ${result['active']}'),
+                Text('Promedio: ${result['avg']}'),
+                Text('Total: ${result['total']}'),
               ],
             ),
           );

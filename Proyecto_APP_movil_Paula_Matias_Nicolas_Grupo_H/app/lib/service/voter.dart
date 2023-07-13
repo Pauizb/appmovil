@@ -101,6 +101,24 @@ class VoterService {
     }
   }
 
+  static Future<List<dynamic>> getresults(String jwt) async {
+    final url = Uri.parse(_host + '/feeling/v1/voter/results');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $jwt',
+    };
+
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      //final courses = jsonResponse['courses'];
+      return jsonResponse;
+    } else {
+      throw Exception('Error al obtener la lista de cursos');
+    }
+  }
+
+
 
 }
 
